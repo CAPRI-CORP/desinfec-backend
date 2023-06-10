@@ -40,7 +40,7 @@ model Customer {
   reference    String?
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
-  historic     Scheduling[]
+  Scheduling     Scheduling[]
 
   @@map("customers")
 }
@@ -51,7 +51,7 @@ model Service {
   cost      String
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
-  historic  Scheduling[]
+  Scheduling  Scheduling[]
 
   @@map("services")
 }
