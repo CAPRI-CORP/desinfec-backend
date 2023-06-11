@@ -72,7 +72,7 @@ export class AuthService {
       },
     });
 
-    const recoveryToken = await bcrypt.hash(this.generateRecoveryUrl(7));
+    const recoveryToken = await bcrypt.hash(this.generateRecoveryUrl(7), 10);
 
     await this.prismaService.user.update({
       where: { id: user.id },
