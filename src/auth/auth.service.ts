@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthDto, RecoveryEmailDto } from './dto';
-import * as argon2 from 'argon2';
+import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
@@ -26,7 +26,7 @@ export class AuthService {
       );
     }
 
-    const isMatch = await argon2.verify(user.password, dto.password);
+    const isMatch = await bcrypt.compare(dto.password, user.password);
 
     if (!isMatch) {
       throw new UnauthorizedException(
@@ -158,7 +158,7 @@ export class AuthService {
       );
     }
 
-    const hashedPassword = await argon2.hash(dto.password);
+    const hashedPassword = await bcrypt.hash(dto.password);
 
     await this.prismaService.user.update({
       where: { id: user.id },

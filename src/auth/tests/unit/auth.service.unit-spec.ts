@@ -4,7 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { AuthDto } from '../../dto/auth.dto';
-import * as argon2 from 'argon2';
+import * as bcrypt from 'bcrypt';
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -44,7 +44,7 @@ describe('AuthService', () => {
       };
 
       jest.spyOn(prismaService.user, 'findUnique').mockResolvedValue(mockUser);
-      jest.spyOn(argon2, 'verify').mockResolvedValue(true);
+      jest.spyOn(bcrypt, 'compare').mockResolvedValue(true);
       jest.spyOn(jwtService, 'signAsync').mockResolvedValue(access_token);
 
       const result = await authService.signin(dto);
@@ -55,9 +55,9 @@ describe('AuthService', () => {
         where: { email: dto.email },
       });
 
-      expect(argon2.verify).toHaveBeenCalledWith(
-        mockUser.password,
+      expect(bcrypt.compare).toHaveBeenCalledWith(
         dto.password,
+        mockUser.password,
       );
 
       expect(jwtService.signAsync).toHaveBeenCalledWith(

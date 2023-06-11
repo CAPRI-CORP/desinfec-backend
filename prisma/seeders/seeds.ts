@@ -1,7 +1,7 @@
 // prisma/seeders/seeds.js
 
 import { PrismaClient } from '@prisma/client';
-import * as argon from 'argon2';
+import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
@@ -13,7 +13,7 @@ async function seed() {
         firstname: 'John',
         lastname: 'Doe',
         email: 'john@example.com',
-        password: await argon.hash('password'),
+        password: await bcrypt.hash('password', 10),
         phone: '1234567890',
       },
     ];
