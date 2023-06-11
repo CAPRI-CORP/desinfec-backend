@@ -32,6 +32,8 @@ describe('AuthService', () => {
         firstname: 'John',
         lastname: 'Doe',
         phone: '1234567890',
+        recoveryPassword: 'abc3456',
+        recoveyPasswordValidation: new Date(Date.now() + 30 * 60000),
         createdAt: new Date(),
         updatedAt: new Date(),
       };

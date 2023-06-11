@@ -11,15 +11,17 @@ datasource db {
 }
 
 model User {
-  id         Int          @id @default(autoincrement())
-  firstname  String
-  lastname   String
-  phone      String       @unique
-  email      String       @unique
-  password   String
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  Scheduling Scheduling[]
+  id                        Int          @id @default(autoincrement())
+  firstname                 String
+  lastname                  String
+  phone                     String       @unique
+  email                     String       @unique
+  password                  String
+  recoveryPassword          String?       
+  recoveyPasswordValidation DateTime?
+  createdAt                 DateTime     @default(now())
+  updatedAt                 DateTime     @updatedAt
+  Scheduling                Scheduling[]
 
   @@map("users")
 }
@@ -40,18 +42,18 @@ model Customer {
   reference    String?
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
-  Scheduling     Scheduling[]
+  Scheduling   Scheduling[]
 
   @@map("customers")
 }
 
 model Service {
-  id        Int          @id @default(autoincrement())
-  name      String       @unique
-  cost      String
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
-  Scheduling  Scheduling[]
+  id         Int          @id @default(autoincrement())
+  name       String       @unique
+  cost       String
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  Scheduling Scheduling[]
 
   @@map("services")
 }
