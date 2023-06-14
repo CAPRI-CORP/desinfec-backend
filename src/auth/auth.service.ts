@@ -72,12 +72,17 @@ export class AuthService {
       },
     });
 
-    const recoveryToken = await bcrypt.hash(this.generateRecoveryUrl(7), 10);
+    const randomToken = this.generateRecoveryUrl(7);
+
+    const recoveryTokenHashed = await bcrypt.hash(
+      `${user.id}/${randomToken}`,
+      10,
+    );
 
     await this.prismaService.user.update({
       where: { id: user.id },
       data: {
-        recoveryPassword: recoveryToken,
+        recoveryPassword: recoveryTokenHashed,
         recoveyPasswordValidation: new Date(Date.now() + 30 * 60000),
       },
     });
@@ -88,7 +93,7 @@ export class AuthService {
       subject: 'Recuperação de senha',
       text: 'Click no link abaixo para recuperar sua senha',
       html: `<a href="${
-        process.env.FRONTEND_URL + recoveryToken
+        process.env.FRONTEND_URL + recoveryTokenHashed
       }">Clique aqui</a>`,
     };
 
@@ -117,21 +122,17 @@ export class AuthService {
     return randomString;
   }
 
-  async changePassword(
-    userId: number,
-    recoveryPassword: string,
-    dto: RecoveryPasswordDto,
-  ): Promise<{ message: string }> {
+  async changePassword(dto: RecoveryPasswordDto): Promise<{ message: string }> {
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
     const user = await this.prismaService.user.findUnique({
-      where: { id: userId },
+      where: { recoveryPassword: dto.token },
     });
 
     if (!user) {
       throw new UnauthorizedException(
-        'Usuário não encontrado, verifique novamente!',
+        'Usuário ou token não encontrados, verifique novamente!',
       );
     }
 
@@ -147,7 +148,7 @@ export class AuthService {
       );
     }
 
-    if (user.recoveryPassword !== recoveryPassword)
+    if (user.recoveryPassword !== dto.token)
       throw new UnauthorizedException(
         'Token de recuperação de senha inválido, verifique novamente!',
       );

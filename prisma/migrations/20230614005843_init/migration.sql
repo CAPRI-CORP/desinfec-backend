@@ -69,6 +69,9 @@ CREATE UNIQUE INDEX "users_phone_key" ON "users"("phone");
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "users_recoveryPassword_key" ON "users"("recoveryPassword");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "customers_phone_key" ON "customers"("phone");
 
 -- CreateIndex

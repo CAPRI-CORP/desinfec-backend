@@ -17,7 +17,7 @@ model User {
   phone                     String       @unique
   email                     String       @unique
   password                  String
-  recoveryPassword          String?       
+  recoveryPassword          String?      @unique
   recoveyPasswordValidation DateTime?
   createdAt                 DateTime     @default(now())
   updatedAt                 DateTime     @updatedAt
