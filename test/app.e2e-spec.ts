@@ -3,6 +3,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { AuthDto } from 'src/auth/dto';
+import * as nodemailer from 'nodemailer';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -92,6 +93,13 @@ describe('AppController (e2e)', () => {
           });
       });
       it('should send the Email', () => {
+        const mockTransporter = {
+          sendMail: jest.fn().mockResolvedValue({ rejected: [] }),
+        };
+        jest
+          .spyOn(nodemailer, 'createTransport')
+          .mockReturnValue(mockTransporter);
+
         return request(app.getHttpServer())
           .post('/auth/recovery-email')
           .send({ email: dto.email })
