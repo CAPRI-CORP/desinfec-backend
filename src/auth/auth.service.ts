@@ -126,7 +126,7 @@ export class AuthService {
 
   async changePassword(dto: RecoveryPasswordDto): Promise<{ message: string }> {
     const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!.%*?&])[A-Za-z\d@$!.%*?&]{8,}$/;
 
     const decodedToken = decodeURIComponent(dto.token);
 
