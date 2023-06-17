@@ -6,13 +6,15 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 import { RecoveryPasswordDto } from './dto/change-password.dto';
-
+import { EmailTemplate } from './assets/email-template';
+import { LoggedUserDto } from 'src/user/dto';
 @Injectable()
 export class AuthService {
   constructor(
     private prismaService: PrismaService,
     private jwt: JwtService,
     private config: ConfigService,
+    private emailTemplate: EmailTemplate,
   ) {}
 
   async signin(dto: AuthDto): Promise<{ access_token?: string }> {
@@ -34,15 +36,21 @@ export class AuthService {
       );
     }
 
-    return this.signToken(user.id, user.email);
+    const payload: LoggedUserDto = {
+      id: user.id,
+      email: user.email,
+      firstname: user.firstname,
+      lastname: user.lastname,
+      phone: user.phone,
+    };
+
+    return this.signToken(payload);
   }
 
   private async signToken(
-    userId: number,
-    email: string,
+    dto: LoggedUserDto,
   ): Promise<{ access_token: string }> {
-    const payload = { userId, email };
-    const token = await this.jwt.signAsync(payload, {
+    const token = await this.jwt.signAsync(dto, {
       expiresIn: '4h',
       secret: this.config.get('JWT_SECRET') || 'secret',
     });
@@ -96,7 +104,7 @@ export class AuthService {
       to: user.email,
       subject: 'Recuperação de senha',
       text: 'Click no link abaixo para recuperar sua senha',
-      html: `<a href="${encodedUrl}>Recuperar senha</a>`,
+      html: this.emailTemplate.getTemplate(user.firstname, encodedUrl),
     };
 
     const result = await transporter.sendMail(mailOptions);
