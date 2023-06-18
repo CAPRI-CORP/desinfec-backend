@@ -13,7 +13,7 @@ async function seed() {
         firstname: 'John',
         lastname: 'Doe',
         email: 'john@example.com',
-        password: await bcrypt.hash('password', 10),
+        password: await bcrypt.hash('passworD1!57', 10),
         phone: '1234567890',
       },
     ];

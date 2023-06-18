@@ -160,11 +160,6 @@ export class AuthService {
       );
     }
 
-    if (user.recoveryPassword !== decodedToken)
-      throw new UnauthorizedException(
-        'Token de recuperação de senha inválido, verifique novamente!',
-      );
-
     if (user.recoveryPasswordValidation < new Date()) {
       throw new UnauthorizedException(
         'Token de recuperação de senha expirado, verifique novamente!',

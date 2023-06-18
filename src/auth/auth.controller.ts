@@ -1,5 +1,5 @@
 import { AuthService } from './auth.service';
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post, Put } from '@nestjs/common';
 import { AuthDto, RecoveryEmailDto } from './dto';
 import { RecoveryPasswordDto } from './dto/change-password.dto';
 
@@ -27,7 +27,7 @@ export class AuthController {
     }
   }
 
-  @Post('change-password')
+  @Put('change-password')
   changePassword(@Body() dto: RecoveryPasswordDto) {
     try {
       return this.authService.changePassword(dto);
