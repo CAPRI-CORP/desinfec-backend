@@ -123,6 +123,25 @@ describe('AppController (e2e)', () => {
           });
       });
 
+      it('should throw if cant sand the email', () => {
+        const mockTransporter = {
+          sendMail: jest.fn().mockResolvedValue({ rejected: ['error'] }),
+        };
+        jest
+          .spyOn(nodemailer, 'createTransport')
+          .mockReturnValue(mockTransporter);
+        return request(app.getHttpServer())
+          .post('/auth/recovery-email')
+          .send({ email: authDto.email })
+          .expect(401)
+          .expect((res) => {
+            expect(res.body.message).toBeDefined();
+            expect(res.body.message).toContain(
+              'Falha ao enviar e-mail, tente novamente mais tarde!',
+            );
+          });
+      });
+
       it('should send the Email', () => {
         const mockTransporter = {
           sendMail: jest.fn().mockResolvedValue({ rejected: [] }),
