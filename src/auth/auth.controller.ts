@@ -1,5 +1,12 @@
 import { AuthService } from './auth.service';
-import { Body, Controller, HttpCode, HttpStatus, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { AuthDto, RecoveryEmailDto } from './dto';
 import { RecoveryPasswordDto } from './dto/change-password.dto';
 

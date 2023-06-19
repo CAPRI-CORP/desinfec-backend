@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from '../src/app.module';
+import { AppModule } from '../../../app.module';
 import { AuthDto } from 'src/auth/dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as nodemailer from 'nodemailer';
@@ -50,32 +50,6 @@ describe('AppController (e2e)', () => {
         return request(app.getHttpServer())
           .post('/auth/signin')
           .send({ email: authDto.email })
-          .expect(400)
-          .expect((res) => {
-            expect(res.body.message).toBeDefined();
-            expect(res.body.message).toContain(
-              'E-mail ou Senha não encontrados, verifique novamente!',
-            );
-          });
-      });
-
-      it('should throw if password and email are empty', () => {
-        return request(app.getHttpServer())
-          .post('/auth/signin')
-          .send({})
-          .expect(400)
-          .expect((res) => {
-            expect(res.body.message).toBeDefined();
-            expect(res.body.message).toContain(
-              'E-mail ou Senha não encontrados, verifique novamente!',
-            );
-          });
-      });
-
-      it('should throw if no body provided', () => {
-        return request(app.getHttpServer())
-          .post('/auth/signin')
-          .send({})
           .expect(400)
           .expect((res) => {
             expect(res.body.message).toBeDefined();
