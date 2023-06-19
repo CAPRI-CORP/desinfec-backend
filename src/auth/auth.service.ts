@@ -115,7 +115,9 @@ export class AuthService {
       const result = await transporter.sendMail(mailOptions);
 
       if (result.rejected.length > 0) {
-        throw new Error('Failed to send password recovery email.');
+        throw new UnauthorizedException(
+          'Falha ao enviar e-mail, tente novamente mais tarde!',
+        );
       }
 
       return {
