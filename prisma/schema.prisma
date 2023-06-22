@@ -75,3 +75,14 @@ model Scheduling {
 
   @@map("schedulings")
 }
+
+model Expenses {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  cost      String
+  date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("expenses")
+}
