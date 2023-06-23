@@ -13,13 +13,14 @@ export class ExpensesService {
 
   async createExpenses(dto: CreateExpensesDto): Promise<{ message: string }> {
     try {
-      const findExpense = await this.prismaService.expenses.findUnique({
+      const findExpense = await this.prismaService.expenses.findMany({
         where: {
           name: dto.name,
+          date: dto.date,
         },
       });
 
-      if (findExpense) {
+      if (findExpense.length > 0) {
         throw new NotAcceptableException('Despesa já cadastrada');
       }
 
@@ -71,21 +72,25 @@ export class ExpensesService {
         throw new NotFoundException('Despesa não encontrada');
       }
 
-      const findExpenseByName = await this.prismaService.service.findUnique({
+      const findExpenseByName = await this.prismaService.expenses.findMany({
         where: {
           name: dto.name,
+          date: dto.date,
         },
       });
 
-      if (findExpenseByName && findExpenseByName.id !== expenseId) {
-        throw new NotAcceptableException('Serviço já cadastrado');
+      if (
+        findExpenseByName.length > 0 &&
+        findExpenseByName[0].id !== expenseId
+      ) {
+        throw new NotAcceptableException('Despesa já cadastrada');
       }
 
       await this.prismaService.expenses.update({
         where: {
           id: expenseId,
         },
-        data: { ...dto },
+        data: { cost: dto.cost, date: new Date(dto.date), name: dto.name },
       });
 
       return { message: 'Despesa atualizada com sucesso' };
