@@ -55,11 +55,22 @@ CREATE TABLE "schedulings" (
     "observations" TEXT,
     "initialDate" TIMESTAMP(3) NOT NULL,
     "finalDate" TIMESTAMP(3) NOT NULL,
-    "status" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "schedulings_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "expenses" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "cost" TEXT NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "expenses_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
