@@ -37,7 +37,15 @@ export class UserService {
         );
       }
 
-      await this.prisma.user.create({ data: dto });
+      await this.prisma.user.create({
+        data: {
+          firstname: dto.firstname,
+          lastname: dto.lastname,
+          phone: dto.phone,
+          email: dto.email,
+          password: dto.password,
+        },
+      });
 
       return { message: 'Usuário cadastrado com sucesso' };
     } catch (error) {
