@@ -11,7 +11,9 @@ import {
 import { ServiceService } from './service.service';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { JwtGuard } from 'src/auth/guard';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Services')
 @UseGuards(JwtGuard)
 @Controller('services')
 export class ServiceController {

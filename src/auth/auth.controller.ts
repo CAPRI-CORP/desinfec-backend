@@ -9,7 +9,9 @@ import {
 } from '@nestjs/common';
 import { AuthDto, RecoveryEmailDto } from './dto';
 import { RecoveryPasswordDto } from './dto/change-password.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

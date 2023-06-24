@@ -11,6 +11,9 @@ import {
 import { ExpensesService } from './expenses.service';
 import { CreateExpensesDto } from './dto/create-expenses.dto';
 import { JwtGuard } from 'src/auth/guard';
+import { ApiTags } from '@nestjs/swagger';
+
+@ApiTags('Expenses')
 @UseGuards(JwtGuard)
 @Controller('expenses')
 export class ExpensesController {
