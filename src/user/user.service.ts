@@ -49,7 +49,7 @@ export class UserService {
 
       return { message: 'Usuário cadastrado com sucesso' };
     } catch (error) {
-      throw new UnauthorizedException(error.message);
+      throw error;
     }
   }
 
@@ -71,7 +71,7 @@ export class UserService {
 
       return usersDto;
     } catch (error) {
-      throw new UnauthorizedException(error.message);
+      throw error;
     }
   }
 
@@ -93,7 +93,7 @@ export class UserService {
 
       return userDto;
     } catch (error) {
-      throw new UnauthorizedException(error.message);
+      throw error;
     }
   }
 
@@ -122,7 +122,7 @@ export class UserService {
 
       return { message: 'Usuário atualizado com sucesso' };
     } catch (error) {
-      throw new UnauthorizedException(error.message);
+      throw error;
     }
   }
 
@@ -138,7 +138,7 @@ export class UserService {
 
       return { message: 'Usuário deletado com sucesso' };
     } catch (error) {
-      throw new UnauthorizedException(error.message);
+      throw error;
     }
   }
 }

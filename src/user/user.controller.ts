@@ -23,7 +23,7 @@ export class UserController {
     try {
       return await this.userService.createUser(dto);
     } catch (error) {
-      return error.message;
+      throw error;
     }
   }
 
@@ -32,7 +32,7 @@ export class UserController {
     try {
       return await this.userService.getUsers();
     } catch (error) {
-      return error.message;
+      throw error;
     }
   }
 
@@ -41,7 +41,7 @@ export class UserController {
     try {
       return await this.userService.getUserById(Number(id));
     } catch (error) {
-      return error.message;
+      throw error;
     }
   }
 
@@ -50,7 +50,7 @@ export class UserController {
     try {
       return await this.userService.updateUser(Number(id), dto);
     } catch (error) {
-      return error.message;
+      throw error;
     }
   }
 
@@ -59,7 +59,7 @@ export class UserController {
     try {
       return await this.userService.deleteUser(Number(id));
     } catch (error) {
-      return error.message;
+      throw error;
     }
   }
 }
