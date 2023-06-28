@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoggedUserDto } from './dto';
-
+import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UserService {
   private passwordRegex =
@@ -43,7 +43,7 @@ export class UserService {
           lastname: dto.lastname,
           phone: dto.phone,
           email: dto.email,
-          password: dto.password,
+          password: await bcrypt.hash(dto.password, 10),
         },
       });
 
@@ -118,7 +118,16 @@ export class UserService {
         );
       }
 
-      await this.prisma.user.update({ where: { id: userId }, data: dto });
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: {
+          firstname: dto.firstname,
+          lastname: dto.lastname,
+          phone: dto.phone,
+          email: dto.email,
+          password: await bcrypt.hash(dto.password, 10),
+        },
+      });
 
       return { message: 'Usuário atualizado com sucesso' };
     } catch (error) {
