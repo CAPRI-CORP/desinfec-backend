@@ -33,9 +33,39 @@ export class ServiceService {
     }
   }
 
-  async getAllService(): Promise<Array<Service>> {
+  async getAllService(
+    page: number,
+    limit: number,
+    name: string | null,
+  ): Promise<{
+    services: Array<Service>;
+    totalCount: number;
+    totalPages: number;
+    currentPage: number;
+  }> {
     try {
-      return await this.prismaService.service.findMany();
+      const offset = (page - 1) * limit;
+
+      let query = {};
+
+      if (name) {
+        query = {
+          OR: [{ name: { contains: name, mode: 'insensitive' } }],
+        };
+      }
+      const [services, totalCount] = await Promise.all([
+        await this.prismaService.service.findMany({
+          skip: offset,
+          take: limit,
+          where: query,
+          orderBy: { name: 'asc' },
+        }),
+        await this.prismaService.service.count({ where: query }),
+      ]);
+      const totalPages = Math.ceil(totalCount / limit);
+      const currentPage = page;
+
+      return { services, totalCount, totalPages, currentPage };
     } catch (error) {
       throw error;
     }

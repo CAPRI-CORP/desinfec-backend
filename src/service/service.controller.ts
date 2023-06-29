@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ServiceService } from './service.service';
@@ -29,9 +30,17 @@ export class ServiceController {
   }
 
   @Get('list')
-  async index() {
+  async index(
+    @Query('page') page = '1',
+    @Query('limit') limit = '10',
+    @Query('name') name: string | null,
+  ) {
     try {
-      return await this.serviceService.getAllService();
+      return await this.serviceService.getAllService(
+        Number(page),
+        Number(limit),
+        name,
+      );
     } catch (error) {
       throw error;
     }
