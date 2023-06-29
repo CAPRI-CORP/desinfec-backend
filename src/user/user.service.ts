@@ -82,14 +82,9 @@ export class UserService {
           skip: offset,
           take: limit,
           where: query,
-          orderBy: { firstname: 'asc' },
+          orderBy: [{ firstname: 'asc' }, { lastname: 'asc' }],
         }),
-        this.prisma.user
-          .findMany({
-            where: query,
-            orderBy: { firstname: 'asc' },
-          })
-          .then((users) => users.length),
+        this.prisma.user.count({ where: query }),
       ]);
 
       const totalPages = Math.ceil(totalCount / limit);

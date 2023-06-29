@@ -30,14 +30,11 @@ export class UserController {
 
   @Get('list')
   async index(
-    @Query('page') page: string,
-    @Query('limit') limit: string,
+    @Query('page') page = '1',
+    @Query('limit') limit = '10',
     @Query('name') name: string | null,
   ) {
     try {
-      if (!page) page = '1';
-      if (!limit) limit = '10';
-
       return await this.userService.getUsers(Number(page), Number(limit), name);
     } catch (error) {
       throw error;
