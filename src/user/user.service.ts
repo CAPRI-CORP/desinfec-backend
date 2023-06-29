@@ -53,9 +53,47 @@ export class UserService {
     }
   }
 
-  async getUsers(): Promise<Array<LoggedUserDto>> {
+  async getUsers(
+    page: number,
+    limit: number,
+    name: string | null,
+  ): Promise<{
+    users: Array<LoggedUserDto>;
+    totalCount: number;
+    totalPages: number;
+    currentPage: number;
+  }> {
     try {
-      const users = await this.prisma.user.findMany();
+      const offset = (page - 1) * limit;
+
+      let query = {};
+
+      if (name) {
+        query = {
+          OR: [
+            { firstname: { contains: name, mode: 'insensitive' } },
+            { lastname: { contains: name, mode: 'insensitive' } },
+          ],
+        };
+      }
+
+      const [users, totalCount] = await Promise.all([
+        this.prisma.user.findMany({
+          skip: offset,
+          take: limit,
+          where: query,
+          orderBy: { firstname: 'asc' },
+        }),
+        this.prisma.user
+          .findMany({
+            where: query,
+            orderBy: { firstname: 'asc' },
+          })
+          .then((users) => users.length),
+      ]);
+
+      const totalPages = Math.ceil(totalCount / limit);
+      const currentPage = page;
 
       const usersDto = users.map((user) => {
         const userDto: LoggedUserDto = {
@@ -69,7 +107,7 @@ export class UserService {
         return userDto;
       });
 
-      return usersDto;
+      return { users: usersDto, totalCount, totalPages, currentPage };
     } catch (error) {
       throw error;
     }
