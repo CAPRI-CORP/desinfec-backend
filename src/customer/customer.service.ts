@@ -45,11 +45,47 @@ export class CustomerService {
     }
   }
 
-  async getAllCustomers(): Promise<Array<Customer>> {
-    try {
-      return await this.prismaService.customer.findMany();
-    } catch (error) {
-      throw error;
+  async getAllCustomers(
+    page: number,
+    limit: number,
+    name: string | null,
+  ): Promise<{
+    customers: Array<Customer>;
+    totalCount: number;
+    totalPages: number;
+    currentPage: number;
+  }> {
+    {
+      try {
+        const offset = (page - 1) * limit;
+
+        let query = {};
+
+        if (name) {
+          query = {
+            OR: [
+              { firstname: { contains: name, mode: 'insensitive' } },
+              { lastname: { contains: name, mode: 'insensitive' } },
+            ],
+          };
+        }
+        const [customers, totalCount] = await Promise.all([
+          this.prismaService.customer.findMany({
+            skip: offset,
+            take: limit,
+            where: query,
+            orderBy: [{ firstname: 'asc' }, { lastname: 'asc' }],
+          }),
+          this.prismaService.customer.count({ where: query }),
+        ]);
+
+        const totalPages = Math.ceil(totalCount / limit);
+        const currentPage = page;
+
+        return { customers, totalCount, totalPages, currentPage };
+      } catch (error) {
+        throw error;
+      }
     }
   }
 

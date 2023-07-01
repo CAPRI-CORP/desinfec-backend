@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { JwtGuard } from 'src/auth/guard';
@@ -29,9 +30,17 @@ export class CustomerController {
   }
 
   @Get('list')
-  async index() {
+  async index(
+    @Query('page') page = '1',
+    @Query('limit') limit = '10',
+    @Query('name') name: string | null,
+  ) {
     try {
-      return await this.customerService.getAllCustomers();
+      return await this.customerService.getAllCustomers(
+        Number(page),
+        Number(limit),
+        name,
+      );
     } catch (error) {
       throw error;
     }
