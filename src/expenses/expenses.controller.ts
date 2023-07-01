@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ExpensesService } from './expenses.service';
@@ -29,9 +30,19 @@ export class ExpensesController {
   }
 
   @Get('list')
-  async index() {
+  async index(
+    @Query('page') page = '1',
+    @Query('limit') limit = '10',
+    @Query('name') name: string | null,
+    @Query('date') date: string | null,
+  ) {
     try {
-      return await this.expensesService.getAllExpenses();
+      return await this.expensesService.getAllExpenses(
+        Number(page),
+        Number(limit),
+        name,
+        date,
+      );
     } catch (error) {
       throw error;
     }

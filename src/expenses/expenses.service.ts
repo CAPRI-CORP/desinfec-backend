@@ -34,9 +34,49 @@ export class ExpensesService {
     }
   }
 
-  async getAllExpenses(): Promise<Array<Expenses>> {
+  async getAllExpenses(
+    page: number,
+    limit: number,
+    name: string | null,
+    date: string | null,
+  ): Promise<{
+    expenses: Array<Expenses>;
+    totalCount: number;
+    totalPages: number;
+    currentPage: number;
+  }> {
     try {
-      return await this.prismaService.expenses.findMany();
+      const offset = (page - 1) * limit;
+
+      let query = {};
+
+      if (name) {
+        query = {
+          ...query,
+          OR: [{ name: { contains: name, mode: 'insensitive' } }],
+        };
+      }
+      if (date) {
+        const dateObj = new Date(date);
+        query = {
+          ...query,
+          OR: [{ date: dateObj }],
+        };
+      }
+
+      const [expenses, totalCount] = await Promise.all([
+        await this.prismaService.expenses.findMany({
+          skip: offset,
+          take: limit,
+          where: query,
+          orderBy: { name: 'asc' },
+        }),
+        await this.prismaService.expenses.count({ where: query }),
+      ]);
+      const totalPages = Math.ceil(totalCount / limit);
+      const currentPage = page;
+
+      return { expenses, totalCount, totalPages, currentPage };
     } catch (error) {
       throw error;
     }
