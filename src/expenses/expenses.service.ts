@@ -42,12 +42,7 @@ export class ExpensesService {
     paginate: string | null,
     initialdate: string | null,
     finaldate: string | null,
-  ): Promise<{
-    expenses: Array<Expenses>;
-    totalCount: number;
-    totalPages: number;
-    currentPage: number;
-  }> {
+  ) {
     try {
       const offset = (page - 1) * limit;
 
@@ -79,14 +74,24 @@ export class ExpensesService {
           orderBy: { name: 'asc' },
         });
 
-        totalCount = await this.prismaService.expenses.count({
-          where: {
-            date: {
-              gte: new Date(initialdate),
-              lte: new Date(finaldate),
-            },
-          },
+        const expenseNames = expenses.map((expense) => expense.name);
+
+        const expenseCount = {};
+
+        expenseNames.forEach((expense) => {
+          if (expenseCount.hasOwnProperty(expense)) {
+            expenseCount[expense]++;
+          } else {
+            expenseCount[expense] = 1;
+          }
         });
+
+        const result = Object.keys(expenseCount).map((expense) => ({
+          name: expense,
+          count: expenseCount[expense],
+        }));
+
+        return result;
       } else if (paginate === 'false') {
         [expenses, totalCount] = await Promise.all([
           await this.prismaService.expenses.findMany({
