@@ -35,6 +35,9 @@ export class ExpensesController {
     @Query('limit') limit = '10',
     @Query('name') name: string | null,
     @Query('date') date: string | null,
+    @Query('paginate') paginate: string | null,
+    @Query('initialDate') initialdate: string | null,
+    @Query('finalDate') finaldate: string | null,
   ) {
     try {
       return await this.expensesService.getAllExpenses(
@@ -42,6 +45,9 @@ export class ExpensesController {
         Number(limit),
         name,
         date,
+        paginate,
+        initialdate,
+        finaldate,
       );
     } catch (error) {
       throw error;

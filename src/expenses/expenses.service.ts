@@ -39,6 +39,9 @@ export class ExpensesService {
     limit: number,
     name: string | null,
     date: string | null,
+    paginate: string | null,
+    initialdate: string | null,
+    finaldate: string | null,
   ): Promise<{
     expenses: Array<Expenses>;
     totalCount: number;
@@ -63,16 +66,46 @@ export class ExpensesService {
           OR: [{ date: dateObj }],
         };
       }
+      let expenses, totalCount;
 
-      const [expenses, totalCount] = await Promise.all([
-        await this.prismaService.expenses.findMany({
-          skip: offset,
-          take: limit,
-          where: query,
+      if (initialdate && finaldate) {
+        expenses = await this.prismaService.expenses.findMany({
+          where: {
+            date: {
+              gte: new Date(initialdate),
+              lte: new Date(finaldate),
+            },
+          },
           orderBy: { name: 'asc' },
-        }),
-        await this.prismaService.expenses.count({ where: query }),
-      ]);
+        });
+
+        totalCount = await this.prismaService.expenses.count({
+          where: {
+            date: {
+              gte: new Date(initialdate),
+              lte: new Date(finaldate),
+            },
+          },
+        });
+      } else if (paginate === 'false') {
+        [expenses, totalCount] = await Promise.all([
+          await this.prismaService.expenses.findMany({
+            where: query,
+            orderBy: { name: 'asc' },
+          }),
+          await this.prismaService.expenses.count({ where: query }),
+        ]);
+      } else {
+        [expenses, totalCount] = await Promise.all([
+          await this.prismaService.expenses.findMany({
+            skip: offset,
+            take: limit,
+            where: query,
+            orderBy: { name: 'asc' },
+          }),
+          await this.prismaService.expenses.count({ where: query }),
+        ]);
+      }
       const totalPages = Math.ceil(totalCount / limit);
       const currentPage = page;
 
