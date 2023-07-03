@@ -83,8 +83,25 @@ export class SchedulingService {
     return dateObj;
   }
 
-  async getAllSchedulings() {
+  async getAllSchedulings(initialDate: string, finalDate: string) {
     try {
+      if (initialDate && finalDate) {
+        return await this.prismaService.scheduling.findMany({
+          where: {
+            initialDate: {
+              gte: new Date(initialDate),
+            },
+            finalDate: {
+              lte: new Date(finalDate),
+            },
+          },
+          include: {
+            Customer: true,
+            Service: true,
+            User: true,
+          },
+        });
+      }
       return await this.prismaService.scheduling.findMany({
         include: {
           Customer: true,

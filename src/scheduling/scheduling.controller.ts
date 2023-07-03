@@ -28,9 +28,15 @@ export class SchedulingController {
   }
 
   @Get('list')
-  async index() {
+  async index(
+    @Param('initialDate') initialdate: string | null,
+    @Param('finalDate') finaldate: string | null,
+  ) {
     try {
-      return await this.schedulingService.getAllSchedulings();
+      return await this.schedulingService.getAllSchedulings(
+        initialdate,
+        finaldate,
+      );
     } catch (error) {
       throw error;
     }
