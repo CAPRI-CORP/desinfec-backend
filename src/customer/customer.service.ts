@@ -132,7 +132,7 @@ export class CustomerService {
         },
       });
 
-      if (existingEmail) {
+      if (existingEmail && existingEmail.id !== customerId) {
         throw new NotAcceptableException('Email já cadastrado');
       }
 
