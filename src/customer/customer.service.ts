@@ -142,7 +142,7 @@ export class CustomerService {
         },
       });
 
-      if (existingPhone) {
+      if (existingPhone && existingPhone.id !== customerId) {
         throw new NotAcceptableException('Telefone já cadastrado');
       }
 
