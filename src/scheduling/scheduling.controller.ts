@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { JwtGuard } from 'src/auth/guard';
@@ -29,13 +30,13 @@ export class SchedulingController {
 
   @Get('list')
   async index(
-    @Param('initialDate') initialdate: string | null,
-    @Param('finalDate') finaldate: string | null,
+    @Query('initialDate') initialDate: string | null,
+    @Query('finalDate') finalDate: string | null,
   ) {
     try {
       return await this.schedulingService.getAllSchedulings(
-        initialdate,
-        finaldate,
+        initialDate,
+        finalDate,
       );
     } catch (error) {
       throw error;

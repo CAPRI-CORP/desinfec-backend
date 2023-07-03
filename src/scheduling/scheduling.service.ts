@@ -83,24 +83,13 @@ export class SchedulingService {
     return dateObj;
   }
 
-  async getAllSchedulings(initialDate: string, finalDate: string) {
+  async getAllSchedulings(
+    initialDate: string | null,
+    finalDate: string | null,
+  ) {
     try {
       if (initialDate && finalDate) {
-        return await this.prismaService.scheduling.findMany({
-          where: {
-            initialDate: {
-              gte: new Date(initialDate),
-            },
-            finalDate: {
-              lte: new Date(finalDate),
-            },
-          },
-          include: {
-            Customer: true,
-            Service: true,
-            User: true,
-          },
-        });
+        return this.getReports(initialDate, finalDate);
       }
       return await this.prismaService.scheduling.findMany({
         include: {
@@ -230,6 +219,49 @@ export class SchedulingService {
       });
 
       return { message: 'Agendamento deletado com sucesso' };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  private async getReports(initialDate: string, finalDate: string) {
+    try {
+      if (initialDate && finalDate) {
+        const reports = await this.prismaService.scheduling.findMany({
+          where: {
+            initialDate: {
+              gte: new Date(initialDate),
+            },
+            finalDate: {
+              lte: new Date(finalDate),
+            },
+          },
+          include: {
+            Customer: true,
+            Service: true,
+            User: true,
+          },
+        });
+
+        const serviceNames = reports.map((report) => report.Service.name);
+
+        const serviceCount = {};
+
+        serviceNames.forEach((service) => {
+          if (serviceCount.hasOwnProperty(service)) {
+            serviceCount[service]++;
+          } else {
+            serviceCount[service] = 1;
+          }
+        });
+
+        const result = Object.keys(serviceCount).map((service) => ({
+          name: service,
+          count: serviceCount[service],
+        }));
+
+        return result;
+      }
     } catch (error) {
       throw error;
     }
