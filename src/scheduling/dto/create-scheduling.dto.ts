@@ -1,14 +1,14 @@
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateSchedulingDto {
   @IsNumber()
   @IsNotEmpty()
   customerId: number;
 
-  @IsNumber()
+  @IsArray()
   @IsNotEmpty()
-  serviceId: number;
+  serviceId: number[];
 
   @IsNumber()
   @IsNotEmpty()
@@ -16,6 +16,10 @@ export class CreateSchedulingDto {
 
   @IsString()
   observations: string;
+
+  @IsString()
+  @IsNotEmpty()
+  cost: string;
 
   @Type(() => Date)
   @IsNotEmpty()

@@ -50,15 +50,26 @@ CREATE TABLE "services" (
 CREATE TABLE "schedulings" (
     "id" SERIAL NOT NULL,
     "customerId" INTEGER NOT NULL,
-    "serviceId" INTEGER NOT NULL,
     "userId" INTEGER NOT NULL,
     "observations" TEXT,
+    "cost" TEXT NOT NULL,
     "initialDate" TIMESTAMP(3) NOT NULL,
     "finalDate" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "schedulings_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "scheduled_services" (
+    "id" SERIAL NOT NULL,
+    "serviceId" INTEGER NOT NULL,
+    "schedulingId" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "scheduled_services_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -95,7 +106,10 @@ CREATE UNIQUE INDEX "services_name_key" ON "services"("name");
 ALTER TABLE "schedulings" ADD CONSTRAINT "schedulings_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "customers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "schedulings" ADD CONSTRAINT "schedulings_serviceId_fkey" FOREIGN KEY ("serviceId") REFERENCES "services"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "schedulings" ADD CONSTRAINT "schedulings_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "schedulings" ADD CONSTRAINT "schedulings_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "scheduled_services" ADD CONSTRAINT "scheduled_services_schedulingId_fkey" FOREIGN KEY ("schedulingId") REFERENCES "schedulings"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "scheduled_services" ADD CONSTRAINT "scheduled_services_serviceId_fkey" FOREIGN KEY ("serviceId") REFERENCES "services"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

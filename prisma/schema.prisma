@@ -48,36 +48,49 @@ model Customer {
 }
 
 model Service {
-  id         Int          @id @default(autoincrement())
-  name       String       @unique
-  cost       String
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  Scheduling Scheduling[]
+  id               Int                @id @default(autoincrement())
+  name             String             @unique
+  cost             String
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  ScheduledService ScheduledService[]
 
   @@map("services")
 }
 
 model Scheduling {
-  id           Int      @id @default(autoincrement())
-  customerId   Int
-  serviceId    Int
-  userId       Int
-  observations String?
-  initialDate  DateTime
-  finalDate    DateTime
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  Customer     Customer @relation(fields: [customerId], references: [id])
-  Service      Service  @relation(fields: [serviceId], references: [id])
-  User         User     @relation(fields: [userId], references: [id])
+  id               Int                @id @default(autoincrement())
+  customerId       Int
+  userId           Int
+  observations     String?
+  cost             String
+  initialDate      DateTime
+  finalDate        DateTime
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  Customer         Customer           @relation(fields: [customerId], references: [id])
+  User             User               @relation(fields: [userId], references: [id])
+  ScheduledService ScheduledService[]
 
   @@map("schedulings")
 }
 
+model ScheduledService {
+  id           Int      @id @default(autoincrement())
+  serviceId    Int
+  schedulingId Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  Scheduling Scheduling @relation(fields: [schedulingId], references: [id])
+  Service    Service    @relation(fields: [serviceId], references: [id])
+
+  @@map("scheduled_services")
+}
+
 model Expenses {
   id        Int      @id @default(autoincrement())
-  name      String   
+  name      String
   cost      String
   date      DateTime
   createdAt DateTime @default(now())

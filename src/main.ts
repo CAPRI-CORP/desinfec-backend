@@ -29,6 +29,6 @@ async function bootstrap() {
   app.use('/api-docs', express.static(path.join(__dirname, 'public')));
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(document, options));
 
-  await app.listen(3000);
+  await app.listen(3006);
 }
 bootstrap();

@@ -28,13 +28,15 @@ export class SchedulingService {
         throw new NotFoundException('Cliente não encontrado');
       }
 
-      const existingService = await this.prismaService.service.findUnique({
+      const existingServices = await this.prismaService.service.findMany({
         where: {
-          id: dto.serviceId,
+          id: {
+            in: dto.serviceId,
+          },
         },
       });
 
-      if (!existingService) {
+      if (existingServices.length !== dto.serviceId.length) {
         throw new NotFoundException('Serviço não encontrado');
       }
 
@@ -44,15 +46,28 @@ export class SchedulingService {
         dto.conslusionTime,
       );
 
-      await this.prismaService.scheduling.create({
+      const createdScheduling = await this.prismaService.scheduling.create({
         data: {
           customerId: dto.customerId,
-          serviceId: dto.serviceId,
           userId: dto.userId,
           observations: dto.observations,
+          cost: dto.cost,
           initialDate: dateObj.initialDate,
           finalDate: dateObj.finalDate,
         },
+      });
+
+      const schedulingId = createdScheduling.id;
+
+      const scheduledServices = dto.serviceId.map((serviceId) => {
+        return {
+          schedulingId,
+          serviceId,
+        };
+      });
+
+      await this.prismaService.scheduledService.createMany({
+        data: scheduledServices,
       });
 
       return { message: 'Agendamento criado com sucesso' };
@@ -94,7 +109,7 @@ export class SchedulingService {
       return await this.prismaService.scheduling.findMany({
         include: {
           Customer: true,
-          Service: true,
+          ScheduledService: true,
           User: true,
         },
       });
@@ -112,7 +127,7 @@ export class SchedulingService {
           },
           include: {
             Customer: true,
-            Service: true,
+            ScheduledService: true,
             User: true,
           },
         },
@@ -162,13 +177,15 @@ export class SchedulingService {
         throw new NotFoundException('Cliente não encontrado');
       }
 
-      const existingService = await this.prismaService.service.findUnique({
+      const existingServices = await this.prismaService.service.findMany({
         where: {
-          id: dto.serviceId,
+          id: {
+            in: dto.serviceId,
+          },
         },
       });
 
-      if (!existingService) {
+      if (existingServices.length !== dto.serviceId.length) {
         throw new NotFoundException('Serviço não encontrado');
       }
 
@@ -178,18 +195,29 @@ export class SchedulingService {
         dto.conslusionTime,
       );
 
-      await this.prismaService.scheduling.update({
+      const createdScheduling = await this.prismaService.scheduling.update({
         where: {
           id: schedulingId,
         },
         data: {
           customerId: dto.customerId,
-          serviceId: dto.serviceId,
+          cost: dto.cost,
           userId: dto.userId,
           observations: dto.observations,
           initialDate: dateObj.initialDate,
           finalDate: dateObj.finalDate,
         },
+      });
+
+      const scheduledServices = dto.serviceId.map((serviceId) => {
+        return {
+          schedulingId,
+          serviceId,
+        };
+      });
+
+      await this.prismaService.scheduledService.createMany({
+        data: scheduledServices,
       });
 
       return { message: 'Agendamento atualizado com sucesso' };
@@ -238,15 +266,21 @@ export class SchedulingService {
           },
           include: {
             Customer: true,
-            Service: true,
+            ScheduledService: {
+              include: {
+                Service: true,
+              },
+            },
             User: true,
           },
         });
 
-        const serviceNames = reports.map((report) => report.Service.name);
-
+        const serviceNames = reports.flatMap((report) =>
+          report.ScheduledService.map(
+            (scheduledService) => scheduledService.Service.name,
+          ),
+        );
         const serviceCount = {};
-
         serviceNames.forEach((service) => {
           if (serviceCount.hasOwnProperty(service)) {
             serviceCount[service]++;
