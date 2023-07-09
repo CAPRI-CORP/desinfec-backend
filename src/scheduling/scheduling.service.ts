@@ -43,7 +43,7 @@ export class SchedulingService {
       const dateObj = this.refactorDate(
         dto.date,
         dto.initialTime,
-        dto.conslusionTime,
+        dto.conclusionTime,
       );
 
       const createdScheduling = await this.prismaService.scheduling.create({
@@ -76,9 +76,9 @@ export class SchedulingService {
     }
   }
 
-  private refactorDate(date, initialTime, conslusionTime) {
+  private refactorDate(date, initialTime, conclusionTime) {
     const initialTimeParts = initialTime.split(':');
-    const conslusionTimeParts = conslusionTime.split(':');
+    const conclusionTimeParts = conclusionTime.split(':');
 
     const initialDate = new Date(date);
     initialDate.setHours(Number(initialTimeParts[0]));
@@ -86,9 +86,9 @@ export class SchedulingService {
     initialDate.setSeconds(Number(initialTimeParts[2]));
 
     const finalDate = new Date(date);
-    finalDate.setHours(Number(conslusionTimeParts[0]));
-    finalDate.setMinutes(Number(conslusionTimeParts[1]));
-    finalDate.setSeconds(Number(conslusionTimeParts[2]));
+    finalDate.setHours(Number(conclusionTimeParts[0]));
+    finalDate.setMinutes(Number(conclusionTimeParts[1]));
+    finalDate.setSeconds(Number(conclusionTimeParts[2]));
 
     const dateObj = {
       initialDate,
@@ -192,10 +192,10 @@ export class SchedulingService {
       const dateObj = this.refactorDate(
         dto.date,
         dto.initialTime,
-        dto.conslusionTime,
+        dto.conclusionTime,
       );
 
-      const createdScheduling = await this.prismaService.scheduling.update({
+      await this.prismaService.scheduling.update({
         where: {
           id: schedulingId,
         },

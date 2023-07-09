@@ -29,5 +29,5 @@ export class CreateSchedulingDto {
   initialTime: string;
 
   @IsNotEmpty()
-  conslusionTime: string;
+  conclusionTime: string;
 }
