@@ -1,3 +1,4 @@
+import { Service } from '@prisma/client';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateSchedulingDto } from './dto';
@@ -79,20 +80,23 @@ export class SchedulingService {
   private refactorDate(date, initialTime, conclusionTime) {
     const initialTimeParts = initialTime.split(':');
     const conclusionTimeParts = conclusionTime.split(':');
-
     const initialDate = new Date(date);
-    initialDate.setHours(Number(initialTimeParts[0]));
-    initialDate.setMinutes(Number(initialTimeParts[1]));
-    initialDate.setSeconds(Number(initialTimeParts[2]));
-
     const finalDate = new Date(date);
-    finalDate.setHours(Number(conclusionTimeParts[0]));
-    finalDate.setMinutes(Number(conclusionTimeParts[1]));
-    finalDate.setSeconds(Number(conclusionTimeParts[2]));
+
+    initialDate.setUTCHours(Number(initialTimeParts[0]));
+    initialDate.setUTCMinutes(Number(initialTimeParts[1]));
+    initialDate.setUTCSeconds(Number(initialTimeParts[2]));
+
+    finalDate.setUTCHours(Number(conclusionTimeParts[0]));
+    finalDate.setUTCMinutes(Number(conclusionTimeParts[1]));
+    finalDate.setUTCSeconds(Number(conclusionTimeParts[2]));
+
+    const initialDateISO = initialDate.toISOString();
+    const finalDateISO = finalDate.toISOString();
 
     const dateObj = {
-      initialDate,
-      finalDate,
+      initialDate: initialDateISO,
+      finalDate: finalDateISO,
     };
 
     return dateObj;
@@ -109,7 +113,8 @@ export class SchedulingService {
       return await this.prismaService.scheduling.findMany({
         include: {
           Customer: true,
-          ScheduledService: true,
+          ScheduledService: { select: { Service: true } },
+
           User: true,
         },
       });
@@ -127,7 +132,7 @@ export class SchedulingService {
           },
           include: {
             Customer: true,
-            ScheduledService: true,
+            ScheduledService: { select: { Service: true } },
             User: true,
           },
         },
@@ -195,30 +200,44 @@ export class SchedulingService {
         dto.conclusionTime,
       );
 
-      await this.prismaService.scheduling.update({
-        where: {
-          id: schedulingId,
-        },
-        data: {
-          customerId: dto.customerId,
-          cost: dto.cost,
-          userId: dto.userId,
-          observations: dto.observations,
-          initialDate: dateObj.initialDate,
-          finalDate: dateObj.finalDate,
-        },
-      });
+      await Promise.all([
+        // Delete scheduled services with missing serviceId values
+        this.prismaService.scheduledService.deleteMany({
+          where: {
+            schedulingId,
+            NOT: {
+              serviceId: {
+                in: dto.serviceId,
+              },
+            },
+          },
+        }),
 
-      const scheduledServices = dto.serviceId.map((serviceId) => {
-        return {
-          schedulingId,
-          serviceId,
-        };
-      });
+        // Add new scheduled services
+        ...dto.serviceId.map(async (service) => {
+          await this.prismaService.scheduledService.create({
+            data: {
+              schedulingId,
+              serviceId: service,
+            },
+          });
+        }),
 
-      await this.prismaService.scheduledService.createMany({
-        data: scheduledServices,
-      });
+        // Update the scheduling record
+        this.prismaService.scheduling.update({
+          where: {
+            id: schedulingId,
+          },
+          data: {
+            cost: dto.cost,
+            observations: dto.observations,
+            initialDate: dateObj.initialDate,
+            finalDate: dateObj.finalDate,
+            userId: dto.userId,
+            customerId: dto.customerId,
+          },
+        }),
+      ]);
 
       return { message: 'Agendamento atualizado com sucesso' };
     } catch (error) {
