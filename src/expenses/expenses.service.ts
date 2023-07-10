@@ -153,7 +153,7 @@ export class ExpensesService {
       const findExpenseByName = await this.prismaService.expenses.findMany({
         where: {
           name: dto.name,
-          date: dto.date,
+          date: new Date(dto.date),
         },
       });
 
