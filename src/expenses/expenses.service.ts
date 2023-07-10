@@ -74,21 +74,9 @@ export class ExpensesService {
           orderBy: { name: 'asc' },
         });
 
-        const expenseNames = expenses.map((expense) => expense.name);
-
-        const expenseCount = {};
-
-        expenseNames.forEach((expense) => {
-          if (expenseCount.hasOwnProperty(expense)) {
-            expenseCount[expense]++;
-          } else {
-            expenseCount[expense] = 1;
-          }
-        });
-
-        const result = Object.keys(expenseCount).map((expense) => ({
-          name: expense,
-          count: expenseCount[expense],
+        const result = expenses.map((expense) => ({
+          name: expense.name,
+          count: expense.cost,
         }));
 
         return result;
