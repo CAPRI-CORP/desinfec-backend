@@ -1,27 +1,37 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateUserDto {
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Existe um campo obrigatório ausente! Verifique novamente.',
+  })
   @IsString()
   readonly firstname: string;
 
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Existe um campo obrigatório ausente! Verifique novamente.',
+  })
   @IsString()
   readonly lastname: string;
 
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Existe um campo obrigatório ausente! Verifique novamente.',
+  })
   @IsString()
   readonly phone: string;
 
-  @IsEmail()
+  @IsEmail({}, { message: 'Campo necessita ser do tipo EMAIL!' })
   @IsString()
   readonly email: string;
 
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Existe um campo obrigatório ausente! Verifique novamente.',
+  })
   @IsString()
   readonly password: string;
 
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Existe um campo obrigatório ausente! Verifique novamente.',
+  })
   @IsString()
   readonly confirmPassword: string;
 }

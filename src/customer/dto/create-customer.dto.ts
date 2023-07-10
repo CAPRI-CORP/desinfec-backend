@@ -2,43 +2,63 @@ import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateCustomerDto {
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Existe um campo obrigatório ausente! Verifique novamente.',
+  })
   firstname: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Existe um campo obrigatório ausente! Verifique novamente.',
+  })
   lastname: string;
 
-  @IsEmail()
-  @IsNotEmpty()
+  @IsEmail({}, { message: 'Campo necessita ser do tipo EMAIL!' })
+  @IsNotEmpty({
+    message: 'Existe um campo obrigatório ausente! Verifique novamente.',
+  })
   email: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Existe um campo obrigatório ausente! Verifique novamente.',
+  })
   phone: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Existe um campo obrigatório ausente! Verifique novamente.',
+  })
   state: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Existe um campo obrigatório ausente! Verifique novamente.',
+  })
   city: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Existe um campo obrigatório ausente! Verifique novamente.',
+  })
   zipcode: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Existe um campo obrigatório ausente! Verifique novamente.',
+  })
   neighborhood: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Existe um campo obrigatório ausente! Verifique novamente.',
+  })
   street: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Existe um campo obrigatório ausente! Verifique novamente.',
+  })
   number: string;
 
   @IsString()
