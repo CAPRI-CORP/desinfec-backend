@@ -259,6 +259,11 @@ export class SchedulingService {
         throw new NotFoundException('Agendamento não encontrado');
       }
 
+      this.prismaService.scheduledService.deleteMany({
+        where: {
+          schedulingId,
+        },
+      });
       await this.prismaService.scheduling.delete({
         where: {
           id: schedulingId,
