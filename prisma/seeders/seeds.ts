@@ -1,13 +1,57 @@
-// prisma/seeders/seeds.js
-
 import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
-async function seed() {
+async function seedCategories() {
   try {
-    // Define your seed data
+    const categories = [
+      { name: 'Mensal', color: 'blue' },
+      { name: 'Residencial', color: 'red' },
+      { name: 'Trimestral', color: 'yellow' },
+      { name: 'Semestral', color: 'green' },
+    ]; // Add your desired categories here
+
+    for (const category of categories) {
+      await prisma.category.create({
+        data: {
+          name: category.name,
+          color: category.color,
+        },
+      });
+    }
+
+    console.log('Categories seeded successfully');
+  } catch (error) {
+    console.error('Error seeding categories:', error);
+  }
+}
+
+async function seedStatuses() {
+  try {
+    const statuses = [
+      'Aguardando Confirmação',
+      'Confirmado',
+      'Cancelado',
+      'Concluído',
+    ]; // Add your desired statuses here
+
+    for (const status of statuses) {
+      await prisma.status.create({
+        data: {
+          name: status,
+        },
+      });
+    }
+
+    console.log('Statuses seeded successfully');
+  } catch (error) {
+    console.error('Error seeding statuses:', error);
+  }
+}
+
+async function seedUsers() {
+  try {
     const users = [
       {
         firstname: 'John',
@@ -22,12 +66,22 @@ async function seed() {
       data: users,
     });
 
-    console.log('Seeding completed successfully.');
+    console.log('Users seeded successfully');
   } catch (error) {
-    console.error('Error seeding the database:', error);
-  } finally {
-    await prisma.$disconnect();
+    console.error('Error seeding users:', error);
   }
 }
 
-seed();
+// Call the seeders
+async function seed() {
+  await seedCategories();
+  await seedStatuses();
+  await seedUsers();
+
+  await prisma.$disconnect();
+}
+
+seed().catch((error) => {
+  console.error('Error running seeders:', error);
+  process.exit(1);
+});

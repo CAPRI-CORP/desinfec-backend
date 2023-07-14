@@ -13,15 +13,15 @@ export class CustomerService {
 
   async createCustomer(dto: CreateCustomerDto): Promise<{ message: string }> {
     try {
-      const existingEmail = await this.prismaService.customer.findUnique({
-        where: {
-          email: dto.email,
-        },
-      });
+      // const existingEmail = await this.prismaService.customer.findUnique({
+      //   where: {
+      //     email: dto.email,
+      //   },
+      // });
 
-      if (existingEmail) {
-        throw new NotAcceptableException('Email já cadastrado');
-      }
+      // if (existingEmail) {
+      //   throw new NotAcceptableException('Email já cadastrado');
+      // }
 
       const existingPhone = await this.prismaService.customer.findUnique({
         where: {
@@ -105,6 +105,9 @@ export class CustomerService {
         where: {
           id: customerId,
         },
+        include: {
+          Category: true,
+        },
       });
     } catch (error) {
       throw error;
@@ -126,15 +129,15 @@ export class CustomerService {
         throw new NotFoundException('Cliente não encontrado');
       }
 
-      const existingEmail = await this.prismaService.customer.findUnique({
-        where: {
-          email: dto.email,
-        },
-      });
+      // const existingEmail = await this.prismaService.customer.findUnique({
+      //   where: {
+      //     email: dto.email,
+      //   },
+      // });
 
-      if (existingEmail && existingEmail.id !== customerId) {
-        throw new NotAcceptableException('Email já cadastrado');
-      }
+      // if (existingEmail && existingEmail.id !== customerId) {
+      //   throw new NotAcceptableException('Email já cadastrado');
+      // }
 
       const existingPhone = await this.prismaService.customer.findUnique({
         where: {

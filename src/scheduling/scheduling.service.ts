@@ -1,4 +1,3 @@
-import { Service } from '@prisma/client';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateSchedulingDto } from './dto';
@@ -49,12 +48,14 @@ export class SchedulingService {
 
       const createdScheduling = await this.prismaService.scheduling.create({
         data: {
+          statusId: dto.statusId,
           customerId: dto.customerId,
           userId: dto.userId,
           observations: dto.observations,
           cost: dto.cost,
           initialDate: dateObj.initialDate,
           finalDate: dateObj.finalDate,
+          paymentMethod: dto.paymentMethod,
         },
       });
 
@@ -108,13 +109,28 @@ export class SchedulingService {
   ) {
     try {
       if (initialDate && finalDate) {
-        return this.getReports(initialDate, finalDate);
+        const obj = {
+          aguardandoConfirmação: await this.getReports(
+            initialDate,
+            finalDate,
+            1,
+          ),
+          Confirmado: await this.getReports(initialDate, finalDate, 2),
+          Cancelado: await this.getReports(initialDate, finalDate, 3),
+          Concluído: await this.getReports(initialDate, finalDate, 4),
+        };
+        return obj;
       }
       return await this.prismaService.scheduling.findMany({
         include: {
-          Customer: true,
+          Customer: {
+            include: {
+              Category: true,
+              // Add other properties you want to include from the Customer table
+            },
+          },
           ScheduledService: { select: { Service: true } },
-
+          Status: true,
           User: true,
         },
       });
@@ -134,6 +150,7 @@ export class SchedulingService {
             Customer: true,
             ScheduledService: { select: { Service: true } },
             User: true,
+            Status: true,
           },
         },
       );
@@ -235,6 +252,8 @@ export class SchedulingService {
             finalDate: dateObj.finalDate,
             userId: dto.userId,
             customerId: dto.customerId,
+            statusId: dto.statusId,
+            paymentMethod: dto.paymentMethod,
           },
         }),
       ]);
@@ -276,7 +295,11 @@ export class SchedulingService {
     }
   }
 
-  private async getReports(initialDate: string, finalDate: string) {
+  private async getReports(
+    initialDate: string,
+    finalDate: string,
+    statusId: number,
+  ) {
     try {
       if (initialDate && finalDate) {
         const reports = await this.prismaService.scheduling.findMany({
@@ -287,6 +310,7 @@ export class SchedulingService {
             finalDate: {
               lte: new Date(finalDate),
             },
+            statusId: statusId,
           },
           include: {
             Customer: true,
@@ -317,7 +341,6 @@ export class SchedulingService {
           name: service,
           count: serviceCount[service],
         }));
-
         return result;
       }
     } catch (error) {

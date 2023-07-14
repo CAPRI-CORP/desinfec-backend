@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateCustomerDto {
   @IsString()
@@ -13,10 +13,7 @@ export class CreateCustomerDto {
   })
   lastname: string;
 
-  @IsEmail({}, { message: 'Campo necessita ser do tipo EMAIL!' })
-  @IsNotEmpty({
-    message: 'Existe um campo obrigatório ausente! Verifique novamente.',
-  })
+  @IsOptional()
   email: string;
 
   @IsString()
@@ -38,9 +35,7 @@ export class CreateCustomerDto {
   city: string;
 
   @IsString()
-  @IsNotEmpty({
-    message: 'Existe um campo obrigatório ausente! Verifique novamente.',
-  })
+  @IsOptional()
   zipcode: string;
 
   @IsString()
@@ -68,4 +63,7 @@ export class CreateCustomerDto {
   @IsString()
   @IsOptional()
   reference: string | null;
+
+  @IsNumber()
+  categoryId: number;
 }

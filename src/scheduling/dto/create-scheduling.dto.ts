@@ -44,4 +44,10 @@ export class CreateSchedulingDto {
     message: 'Existe um campo obrigatório ausente! Verifique novamente.',
   })
   conclusionTime: string;
+
+  @IsNumber()
+  statusId: number;
+
+  @IsString()
+  paymentMethod: string;
 }
