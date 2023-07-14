@@ -28,7 +28,7 @@ model Customer {
   firstname    String
   lastname     String
   phone        String       @unique
-  email        String       @unique
+  email        String       
   state        String
   city         String
   zipcode      String

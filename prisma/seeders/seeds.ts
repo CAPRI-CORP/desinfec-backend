@@ -6,11 +6,11 @@ const prisma = new PrismaClient();
 async function seedCategories() {
   try {
     const categories = [
-      { name: 'Mensal', color: 'blue' },
+      { name: 'Mensal', color: '#f5f5f5' },
       { name: 'Residencial', color: 'red' },
       { name: 'Trimestral', color: 'yellow' },
       { name: 'Semestral', color: 'green' },
-    ]; // Add your desired categories here
+    ];
 
     for (const category of categories) {
       await prisma.category.create({

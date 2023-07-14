@@ -1,5 +1,11 @@
 import { Type } from 'class-transformer';
-import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateSchedulingDto {
   @IsNumber()
@@ -49,5 +55,6 @@ export class CreateSchedulingDto {
   statusId: number;
 
   @IsString()
+  @IsOptional()
   paymentMethod: string;
 }
