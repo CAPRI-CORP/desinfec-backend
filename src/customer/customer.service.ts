@@ -74,6 +74,9 @@ export class CustomerService {
             skip: offset,
             take: limit,
             where: query,
+            include: {
+              Category: true,
+            },
             orderBy: [{ firstname: 'asc' }, { lastname: 'asc' }],
           }),
           this.prismaService.customer.count({ where: query }),
