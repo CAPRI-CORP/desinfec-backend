@@ -80,7 +80,7 @@ model Scheduling {
   customerId       Int
   userId           Int
   observations     String?
-  cost             String
+  cost             String?
   initialDate      DateTime
   finalDate        DateTime
   paymentMethod    String

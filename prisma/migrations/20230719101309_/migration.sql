@@ -71,7 +71,7 @@ CREATE TABLE "schedulings" (
     "customerId" INTEGER NOT NULL,
     "userId" INTEGER NOT NULL,
     "observations" TEXT,
-    "cost" TEXT NOT NULL,
+    "cost" TEXT,
     "initialDate" TIMESTAMP(3) NOT NULL,
     "finalDate" TIMESTAMP(3) NOT NULL,
     "paymentMethod" TEXT NOT NULL,
@@ -115,9 +115,6 @@ CREATE UNIQUE INDEX "users_recoveryPassword_key" ON "users"("recoveryPassword");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "customers_phone_key" ON "customers"("phone");
-
--- CreateIndex
-CREATE UNIQUE INDEX "customers_email_key" ON "customers"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "services_name_key" ON "services"("name");
