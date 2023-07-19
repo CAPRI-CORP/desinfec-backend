@@ -28,10 +28,10 @@ model Customer {
   firstname    String
   lastname     String
   phone        String       @unique
-  email        String       
+  email        String?       
   state        String
   city         String
-  zipcode      String
+  zipcode      String?
   neighborhood String
   street       String
   number       String
