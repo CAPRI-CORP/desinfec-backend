@@ -80,10 +80,10 @@ model Scheduling {
   customerId       Int
   userId           Int
   observations     String?
-  cost             String?
+  cost             String
   initialDate      DateTime
   finalDate        DateTime
-  paymentMethod    String
+  paymentMethod    String?
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
   Customer         Customer           @relation(fields: [customerId], references: [id])

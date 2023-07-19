@@ -71,10 +71,10 @@ CREATE TABLE "schedulings" (
     "customerId" INTEGER NOT NULL,
     "userId" INTEGER NOT NULL,
     "observations" TEXT,
-    "cost" TEXT,
+    "cost" TEXT NOT NULL,
     "initialDate" TIMESTAMP(3) NOT NULL,
     "finalDate" TIMESTAMP(3) NOT NULL,
-    "paymentMethod" TEXT NOT NULL,
+    "paymentMethod" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
