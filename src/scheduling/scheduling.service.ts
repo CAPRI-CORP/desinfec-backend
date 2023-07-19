@@ -147,7 +147,11 @@ export class SchedulingService {
             id: schedulingId,
           },
           include: {
-            Customer: true,
+            Customer: {
+              include: {
+                Category: true,
+              },
+            },
             ScheduledService: { select: { Service: true } },
             User: true,
             Status: true,
